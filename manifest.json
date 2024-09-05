@@ -1,0 +1,11 @@
+{
+        "manifest_version": 3,
+        "name": "WebLocker",
+        "version": "1.0",
+        "description": "An extension to password-protect websites",
+        
+        "action": {
+                "default_popup" : "popup.html"
+        }
+
+}
