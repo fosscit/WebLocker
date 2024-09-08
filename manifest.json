@@ -3,9 +3,10 @@
         "name": "WebLocker",
         "version": "1.0",
         "description": "An extension to password-protect websites",
+        "permissions":["storage","tabs"],
         
         "action": {
-                "default_popup" : "popup.html"
+                "default_popup": "popup.html"
         }
 
 }
