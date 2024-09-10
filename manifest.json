@@ -7,6 +7,21 @@
         
         "action": {
                 "default_popup": "popup.html"
-        }
+        },
+        "background": {
+            "service_worker": "background.js"
+        },
+        "content_scripts": [
+            {
+                "matches": ["<all_urls>"],
+                "js": ["popup.js"]
+            }
+        ],
+        "web_accessible_resources": [
+            {
+                "resources": ["popup.html", "style.css"],
+                "matches": ["<all_urls>"]
+            }
+        ]
 
 }
