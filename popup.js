@@ -29,19 +29,6 @@ document.addEventListener('DOMContentLoaded',() =>{
     });
 });
 
-function addSite(site){
-    console.log('Adding site:',site);
-
-    // Get sites from local storage
-    const sites=JSON.parse(localStorage.getItem('protectedSites')) || [];
-    console.log('Existing sites:',sites);
-
-    sites.push(site);
-
-    // Overwrite local storage
-    localStorage.setItem('protectedSites',JSON.stringify(sites));
-}
-
 function displaySites(){
     const siteListDiv=document.getElementById('listSites');
     if(!siteListDiv){
