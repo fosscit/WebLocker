@@ -1,81 +1,55 @@
-document.addEventListener('DOMContentLoaded',() =>{
-    console.log('DOM fully loaded and parsed');
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM fully loaded and parsed");
 
-    const addButton=document.getElementById('addSitesConfirm');
-    const deleteButton=document.getElementById('deleteSitesConfirm');
-    const addSiteInput=document.getElementById('addSites');
-    const deleteSiteInput=document.getElementById('deleteSites');
-    const siteListDiv=document.getElementById('listSites');
+  const addButton = document.getElementById("addSitesConfirm");
+  const deleteButton = document.getElementById("deleteSitesConfirm");
+  const addSiteInput = document.getElementById("addSites");
+  const deleteSiteInput = document.getElementById("deleteSites");
+  const siteListDiv = document.getElementById("listSites");
 
-    console.log('Elements:',addButton,addSiteInput,siteListDiv);
+  console.log("Elements:", addButton, addSiteInput, siteListDiv);
 
-    displaySites();
+  displaySites();
 
-    addButton.addEventListener('click',() =>{
-        const site=addSiteInput.value.trim();
-        if(site){
-            addSite(site);
-            addSiteInput.value="";
-            displaySites();
-        }
-    });
-    deleteButton.addEventListener('click', () => {
-        const siteToDelete = deleteSiteInput.value.trim();
-        if (siteToDelete) {
-            deleteSite(siteToDelete);
-            deleteSiteInput.value = "";
-            displaySites();
-        }
-    });
+  addButton.addEventListener("click", async () => {
+    const site = addSiteInput.value.trim();
+    if (site) {
+      await PageService.savePage(site);
+      addSiteInput.value = "";
+      displaySites();
+    }
+  });
+  deleteButton.addEventListener("click", async () => {
+    const siteToDelete = deleteSiteInput.value.trim();
+    if (siteToDelete) {
+      await PageService.removePage(siteToDelete);
+      deleteSiteInput.value = "";
+      displaySites();
+    }
+  });
 });
 
-function addSite(site){
-    console.log('Adding site:',site);
+async function displaySites() {
+  const siteListDiv = document.getElementById("listSites");
+  if (!siteListDiv) {
+    console.error('Element with id "siteList" not found.');
+    return;
+  }
 
-    // Get sites from local storage
-    const sites=JSON.parse(localStorage.getItem('protectedSites')) || [];
-    console.log('Existing sites:',sites);
+  console.log("Displaying sites");
 
-    sites.push(site);
+  siteListDiv.innerHTML = "";
 
-    // Overwrite local storage
-    localStorage.setItem('protectedSites',JSON.stringify(sites));
-}
+  // Get sites from localStorage
+  const sites = await PageService.getPages();
+  console.log("Sites to display:", sites);
 
-function displaySites(){
-    const siteListDiv=document.getElementById('listSites');
-    if(!siteListDiv){
-        console.error('Element with id "siteList" not found.');
-        return;
-    }
-
-    console.log('Displaying sites');
-
-    siteListDiv.innerHTML='';
-
-    // Get sites from localStorage
-    const sites=JSON.parse(localStorage.getItem('protectedSites')) || [];
-    console.log('Sites to display:',sites);
-
-    // Create a list of sites
-    const ul=document.createElement('ul');
-    sites.forEach(site =>{
-        const li=document.createElement('li');
-        li.textContent=site;
-        ul.appendChild(li);
-    });
-    siteListDiv.appendChild(ul);
-}
-
-function deleteSite(siteToDelete){
-    // Get existing sites from localStorage
-    const sites=JSON.parse(localStorage.getItem('protectedSites')) || [];
-    
-    // Filter out the site to delete
-    const updatedSites=sites.filter(site => site !== siteToDelete);
-    
-    // Update local storage
-    localStorage.setItem('protectedSites',JSON.stringify(updatedSites));
-
-    displaySites();
+  // Create a list of sites
+  const ul = document.createElement("ul");
+  sites.forEach((site) => {
+    const li = document.createElement("li");
+    li.textContent = site.url;
+    ul.appendChild(li);
+  });
+  siteListDiv.appendChild(ul);
 }
