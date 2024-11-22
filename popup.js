@@ -66,8 +66,8 @@ async function displaySites() {
     const li = document.createElement("li");
     li.textContent = site.url;
     const input = document.createElement("input")
-    input.textContent = "X";
     input.type = "button";
+    input.value = "X"
     input.addEventListener("click",async ()=> {
       await PageService.removePage(site.url);
       displaySites();
