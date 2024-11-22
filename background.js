@@ -1,12 +1,14 @@
 importScripts("page_service.js");
 
-chrome.storage.onChanged.addListener((changes, areaName) => {
-  console.log("changes in ", areaName);
-  console.log(changes);
-  if (areaName === "local" && changes.pages !== undefined) {
-    updateData();
+
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "updateBlockRules") {
+    updateData(); // Call updateData to re-apply the blocking rules
+    sendResponse({ success: true });
   }
 });
+
 
 const updateData = async () => {
   chrome.declarativeNetRequest.getDynamicRules((previousRules) => {
@@ -29,7 +31,24 @@ const updateData = async () => {
           const res = chrome.declarativeNetRequest.updateDynamicRules({
             removeRuleIds: previousRuleIds,
             addRules: newRules,
+          },
+        () => {
+          chrome.tabs.query( {},(tabs) => {
+            const changedTabs = newRules.map((rule)=> rule.condition.urlFilter)
+            const oldtabs = previousRules.map((rule) => rule.condition.urlFilter )
+            tabs.filter(x => {
+
+              const a = new URL(x.url)
+
+             return changedTabs.filter(x => !oldtabs.includes(x)).includes(a.origin) ||
+                    oldtabs.filter(x => !changedTabs.includes(x) ).includes(a.origin)
+
+            }).map(x => {
+              chrome.tabs.reload(x.id)
+            })
           });
+        }
+        );
         })
         .catch((err) => {
           console.log("error found", err);
