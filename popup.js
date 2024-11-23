@@ -7,31 +7,76 @@ document.addEventListener("DOMContentLoaded", () => {
   const addSiteInput = document.getElementById("addSites");
   const deleteSiteInput = document.getElementById("deleteSites");
   const siteListDiv = document.getElementById("listSites");
+  const submitButton = document.getElementById("submitPassword");
+  const submitButtonForRemoval = document.getElementById("submitPasswordForRemoval");
+  const passwordInput = document.getElementById("passwordField" );
+  const passwordInputForRemoval = document.getElementById("passwordFieldForRemoval");
 
   console.log("Elements:", addButton, addSiteInput, siteListDiv);
 
   displaySites();
 
+currentAddButton.addEventListener("click", async () => {
+  await fetchAndBlockCurrentSite();
+  displaySites();
+});
+
+
   addButton.addEventListener("click", async () => {
     const site = addSiteInput.value.trim();
     if (site) {
-      await PageService.savePage(site);
-      addSiteInput.value = "";
-      displaySites();
+      const pageexists = await   PasswordService.detectPage(site)
+      if (!pageexists){
+      document.getElementsByClassName('password-new')[0].style.display = 'block'
+      }else{
+          await PageService.savePage(site);
+          addSiteInput.value = "";
+          displaySites();
+          
+          
+          
+          
     }
+  }
   });
-  currentAddButton.addEventListener("click", async () => {
-    await fetchAndBlockCurrentSite();
-    displaySites();
-  });
+ submitButton.addEventListener("click",async  () => {
+    const site = addSiteInput.value.trim();
+    const password = passwordInput.value.trim();
+    if (site && password ) {
+        await PasswordService.saveEntry(site,password) 
+        await PageService.savePage(site);
+        addSiteInput.value = "";
+        displaySites();
+        currentAddButton.addEventListener("click", async () => {
+          await fetchAndBlockCurrentSite();
+          displaySites();
+        })
+        document.getElementsByClassName('password-new')[0].style.display = 'none'
+    }
+    passwordInput.value = "";
+    });
   deleteButton.addEventListener("click", async () => {
     const siteToDelete = deleteSiteInput.value.trim();
+
     if (siteToDelete) {
       await PageService.removePage(siteToDelete);
       deleteSiteInput.value = "";
       displaySites();
     }
   });
+ submitButtonForRemoval.addEventListener("click",async  () => {
+    const site = document.getElementById('siteToBeRemoved').textContent;
+    const password = passwordInputForRemoval.value.trim();
+    if (site && password ) {
+      if(await PasswordService.validatePage(site,password)){
+        await PageService.removePage(site);
+        displaySites();
+        document.getElementsByClassName('password-old')[0].style.display = 'none'
+      passwordInputForRemoval.value = "";
+      document.getElementById('siteToBeRemoved').value = ""
+    }
+  }
+    });
 });
 
 async function fetchAndBlockCurrentSite() {
@@ -41,7 +86,13 @@ async function fetchAndBlockCurrentSite() {
     lastFocusedWindow: true,
   });
   const url = new URL(tab.url);
-  await PageService.savePage(url.origin);
+  if (await PasswordService.detectPage(url.origin)) {
+    await PageService.savePage(url.origin);
+  }else{
+    document.getElementById('addSites').value = url.origin;
+
+    document.getElementsByClassName('password-new')[0].style.display = 'block'
+  }
   
 }
 
@@ -69,8 +120,10 @@ async function displaySites() {
     input.type = "button";
     input.value = "X"
     input.addEventListener("click",async ()=> {
-      await PageService.removePage(site.url);
-      displaySites();
+      
+      document.getElementsByClassName('password-old')[0].style.display = 'block'
+      document.getElementById('siteToBeRemoved').innerHTML = site.url;
+
 
     })
     li.appendChild(input);
