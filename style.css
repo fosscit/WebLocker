@@ -96,3 +96,7 @@ button:hover {
 #listSites li button:hover {
   background-color: #b30000;
 }
+
+.password-new , .password-old{
+  display:none;
+}
