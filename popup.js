@@ -32,10 +32,6 @@ currentAddButton.addEventListener("click", async () => {
           await PageService.savePage(site);
           addSiteInput.value = "";
           displaySites();
-          
-          
-          
-          
     }
   }
   });
@@ -58,10 +54,11 @@ currentAddButton.addEventListener("click", async () => {
   deleteButton.addEventListener("click", async () => {
     const siteToDelete = deleteSiteInput.value.trim();
 
-    if (siteToDelete) {
-      await PageService.removePage(siteToDelete);
-      deleteSiteInput.value = "";
-      displaySites();
+    if (siteToDelete && PasswordService.detectPage(siteToDelete)) {
+
+      document.getElementsByClassName('password-old')[0].style.display = 'block'
+      document.getElementById('siteToBeRemoved').innerHTML = siteToDelete;
+      deleteSiteInput.value = '';
     }
   });
  submitButtonForRemoval.addEventListener("click",async  () => {
@@ -123,8 +120,6 @@ async function displaySites() {
       
       document.getElementsByClassName('password-old')[0].style.display = 'block'
       document.getElementById('siteToBeRemoved').innerHTML = site.url;
-
-
     })
     li.appendChild(input);
     ul.appendChild(li);
