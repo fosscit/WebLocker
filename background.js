@@ -1,4 +1,4 @@
-importScripts("page_service.js");
+importScripts("page_service.js","password_service.js");
 
 
 
@@ -38,7 +38,7 @@ const updateData = async () => {
             const oldtabs = previousRules.map((rule) => rule.condition.urlFilter )
             tabs.filter(x => {
 
-              const a = new URL(x.url)
+            const a = new URL(x.url)
 
              return changedTabs.filter(x => !oldtabs.includes(x)).includes(a.origin) ||
                     oldtabs.filter(x => !changedTabs.includes(x) ).includes(a.origin)
