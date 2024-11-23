@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const site = addSiteInput.value.trim();
     if (site) {
       const pageexists = await PasswordService.detectPage(site);
-      if (!pageexists) {
+      if (pageexists === false) {
         document.getElementsByClassName("password-new")[0].style.display = "block";
       } else {
         await PageService.savePage(site);
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   deleteButton.addEventListener("click", async () => {
     const siteToDelete = deleteSiteInput.value.trim();
 
-    if (siteToDelete && PasswordService.detectPage(siteToDelete)) {
+    if (siteToDelete && (PasswordService.detectPage(siteToDelete) === true)) {
       document.getElementsByClassName("password-old")[0].style.display = "block";
       document.getElementById("siteToBeRemoved").innerHTML = siteToDelete;
       deleteSiteInput.value = "";
@@ -80,7 +80,7 @@ async function fetchAndBlockCurrentSite() {
   });
   const url = new URL(tab.url);
   const pagedetected = await PasswordService.detectPage(url.origin);
-  if (pagedetected) {
+  if (pagedetected === true) {
     await PageService.savePage(url.origin);
   } else {
     document.getElementById("addSites").value = url.origin;
@@ -101,7 +101,6 @@ async function displaySites() {
 
   // Get sites from localStorage
   const sites = await PageService.getPages();
-  console.log("Sites to display:", sites);
 
   // Create a list of sites
   const ul = document.createElement("ul");

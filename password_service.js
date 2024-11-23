@@ -7,7 +7,6 @@ class PasswordService {
       chrome.storage.local.get([ENTRIES_KEY], (result) => {
         if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
 
-        console.log(result)
         const researches = result.passwords ?? [];
         resolve(researches);
       });
@@ -50,7 +49,6 @@ class PasswordService {
   }
   static detectPage = async (url) => {
     const entries = await this.getEntries()
-    console.log(entries)
     return entries.filter(x => x.url === url ).length === 1
   }
 
