@@ -1,6 +1,9 @@
 importScripts("page_service.js","password_service.js");
 
 
+chrome.runtime.setUninstallURL('https://www.google.com',()=> {
+  console.log("uninstall ? ")
+})
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "updateBlockRules") {
