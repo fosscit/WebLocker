@@ -1,53 +1,71 @@
 <!doctype html>
 <html>
-  <head>
-    <script src="page_service.js"></script>
-    <script src="password_service.js"></script>
-    <script src="popup.js"></script>
-    <link rel="stylesheet" href="style.css" />
-    <title>WebLocker</title>
-  </head>
-  <body>
-    <div class="container">
-      <h1>WebLocker</h1>
-      <p>An extension to password-protect websites</p>
+    <head>
+        <script src="page_service.js"></script>
+        <script src="password_service.js"></script>
+        <script src="popup.js"></script>
+        <link rel="stylesheet" href="style.css" />
+        <title>WebLocker</title>
+    </head>
+    <body>
+        <div class="container">
+            <h1>WebLocker</h1>
+            <p>An extension to password-protect websites</p>
 
-      <div class="input-group">
-        <label for="addSites">Add a website to protect:</label>
-        <input id="addSites" name="addSites" type="text" placeholder="e.g., example.com" />
-        <button id="addSitesConfirm">Add</button>
-      </div>
-      <div class="input-group password-new" >
+            <div class="input-group password-new">
+                <label for="passwordEnter">Enter password:</label>
+                <input
+                    id="passwordField"
+                    name="enterPassword"
+                    type="text"
+                    placeholder="Enter password here"
+                />
+                <button id="submitPassword">Lock</button>
+            </div>
+            <div class="input-group password-old">
+                <label for="passwordEnterForRemoval"
+                    >Enter Password to unlock
+                    <span id="siteToBeRemoved"></span>:</label
+                >
+                <input
+                    id="passwordFieldForRemoval"
+                    name="enterPasswordForRemoval"
+                    type="text"
+                    placeholder="Enter password here"
+                />
+                <button id="submitPasswordForRemoval">Unlock</button>
+            </div>
+            <div class="input-group">
+                <button id="currentWebsiteBlockButton">
+                    Block Current Website
+                </button>
+            </div>
 
-        <label for="passwordEnter">Enter password:</label>
-        <input id="passwordField" name="enterPassword" type="text" placeholder="Enter password here" />
-        <button id="submitPassword">Lock</button>
+            <div class="input-group">
+                <label for="addSites">Add a website to protect:</label>
+                <input
+                    id="addSites"
+                    name="addSites"
+                    type="text"
+                    placeholder="e.g., example.com"
+                />
+                <button id="addSitesConfirm">Add</button>
+            </div>
 
-
-      </div>
-
-      <div class="input-group">
-        <button id="currentWebsiteBlockButton">Block Current Website</button>
-      </div>
-
-      <div class="input-group">
-        <label for="deleteSites">Remove a website:</label>
-        <input id="deleteSites" name="deleteSites" type="text" placeholder="e.g., example.com" />
-        <button id="deleteSitesConfirm">Delete</button>
-      </div>
-      <div class="input-group password-old" >
-
-        <label for="passwordEnterForRemoval">Enter Password to unlock <span id="siteToBeRemoved"></span>:</label>
-        <input id="passwordFieldForRemoval" name="enterPasswordForRemoval" type="text" placeholder="Enter password here" />
-        <button id="submitPasswordForRemoval">Unlock</button>
-
-
-      </div>
-
-      <div id="listSites">
-        <h3>Protected Websites:</h3>
-        <!-- List of websites will be dynamically populated -->
-      </div>
-    </div>
-  </body>
+            <div class="input-group">
+                <label for="deleteSites">Remove a website:</label>
+                <input
+                    id="deleteSites"
+                    name="deleteSites"
+                    type="text"
+                    placeholder="e.g., example.com"
+                />
+                <button id="deleteSitesConfirm">Delete</button>
+            </div>
+            <h3>Protected Websites:</h3>
+            <div id="listSites">
+                <!-- List of websites will be dynamically populated -->
+            </div>
+        </div>
+    </body>
 </html>
