@@ -14,15 +14,35 @@ class PageService {
 
     return promise;
   };
+  static detectpage = async (url) => {
+    const pages = await this.getPages();
+    console.log(pages.map((site) => site.url).includes(url), url);
+    return pages.map((site) => site.url).includes(url);
+  };
 
   static savePage = async (url) => {
     const pages = await this.getPages();
+
+    const pagelist = [];
+    pages.forEach((site) => {
+      pagelist.push(site.url);
+    });
+
+    if (pagelist.includes(url)) {
+      return;
+    }
+
     const updatedPages = [...pages, { url }];
 
     const promise = toPromise((resolve, reject) => {
-      chrome.storage.local.set({ [PAGES_KEY]: updatedPages }, () => {
+      chrome.storage.local.set({ [PAGES_KEY]: updatedPages }, async () => {
         if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-        resolve(updatedPages);
+
+        // Send a message to background to update the blocking rules immediately
+        chrome.runtime.sendMessage({ type: "updateBlockRules" }, (response) => {
+          if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+          resolve(updatedPages);
+        });
       });
     });
 
@@ -34,8 +54,10 @@ class PageService {
 
     const promise = toPromise((resolve, reject) => {
       chrome.storage.local.set({ [PAGES_KEY]: updatedPages }, () => {
-        if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-        resolve(updatedPages);
+        chrome.runtime.sendMessage({ type: "updateBlockRules" }, (response) => {
+          if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+          resolve(updatedPages);
+        });
       });
     });
 
